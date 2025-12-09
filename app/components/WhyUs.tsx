@@ -18,7 +18,7 @@ export default function WhyUs() {
   ];
 
   return (
-    <section className="py-3 sm:py-8 bg-[#041A2F]">
+    <section className="py-2 sm:py-6 bg-[#041A2F]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-3 gap-2 sm:gap-6">
           {benefits.map((benefit, index) => (

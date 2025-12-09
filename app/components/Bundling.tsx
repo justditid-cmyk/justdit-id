@@ -43,17 +43,17 @@ export default function Bundling() {
           </p>
         </div>
 
-        <div className="lg:grid lg:grid-cols-2 lg:gap-8 space-y-8 lg:space-y-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Side - 4 small bundles in 2x2 grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-4">
+          <div className="grid grid-cols-2 gap-4">
             {bundles.slice(0, 3).map((bundle, index) => (
               <div
                 key={index}
                 className="bg-linear-to-br from-[#28529C] to-[#1e3d7a] rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl"
               >
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold">
+                    <span className="bg-yellow-500 text-black px-2 sm:px-3 py-1 rounded-full text-xs font-bold">
                       {bundle.badge}
                     </span>
                     <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
@@ -61,10 +61,10 @@ export default function Bundling() {
                     </span>
                   </div>
 
-                  <h3 className="text-xl font-bold text-white mb-2">
+                  <h3 className="text-base sm:text-xl font-bold text-white mb-2">
                     {bundle.name}
                   </h3>
-                  <p className="text-gray-200 text-sm mb-4">
+                  <p className="text-gray-200 text-xs sm:text-sm mb-4">
                     {bundle.description}
                   </p>
 
@@ -72,7 +72,7 @@ export default function Bundling() {
                     {bundle.products.map((product, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-2 text-white text-sm"
+                        className="flex items-center gap-2 text-white text-xs sm:text-sm"
                       >
                         <span className="text-green-400">✓</span>
                         <span>{product}</span>
@@ -84,13 +84,13 @@ export default function Bundling() {
                     <div className="flex items-end gap-2 mb-4">
                       <div>
                         <div className="text-xs text-gray-300 mb-1">Normal</div>
-                        <div className="text-sm text-gray-400 line-through">
+                        <div className="text-xs sm:text-sm text-gray-400 line-through">
                           Rp {bundle.originalPrice.toLocaleString("id-ID")}
                         </div>
                       </div>
                       <div>
                         <div className="text-xs text-gray-300 mb-1">Paket</div>
-                        <div className="text-2xl font-bold text-white">
+                        <div className="text-lg sm:text-2xl font-bold text-white">
                           Rp {bundle.bundlePrice.toLocaleString("id-ID")}
                         </div>
                       </div>
@@ -98,7 +98,7 @@ export default function Bundling() {
 
                     <Link
                       href="#contact"
-                      className="block w-full bg-white hover:bg-gray-200 text-[#041A2F] text-center py-2 rounded-full text-sm font-bold transition-colors"
+                      className="block w-full bg-white hover:bg-gray-200 text-[#041A2F] text-center py-2 rounded-full text-xs sm:text-sm font-bold transition-colors"
                     >
                       Ambil Paket
                     </Link>
@@ -109,9 +109,9 @@ export default function Bundling() {
 
             {/* Add 4th bundle placeholder */}
             <div className="bg-linear-to-br from-[#28529C] to-[#1e3d7a] rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold">
+                  <span className="bg-yellow-500 text-black px-2 sm:px-3 py-1 rounded-full text-xs font-bold">
                     Custom
                   </span>
                   <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
@@ -119,23 +119,23 @@ export default function Bundling() {
                   </span>
                 </div>
 
-                <h3 className="text-xl font-bold text-white mb-2">
+                <h3 className="text-base sm:text-xl font-bold text-white mb-2">
                   Paket Custom
                 </h3>
-                <p className="text-gray-200 text-sm mb-4">
+                <p className="text-gray-200 text-xs sm:text-sm mb-4">
                   Pilih produk sesuai kebutuhan Anda
                 </p>
 
                 <div className="space-y-1 mb-4">
-                  <div className="flex items-center gap-2 text-white text-sm">
+                  <div className="flex items-center gap-2 text-white text-xs sm:text-sm">
                     <span className="text-green-400">✓</span>
                     <span>Pilih 3+ Produk</span>
                   </div>
-                  <div className="flex items-center gap-2 text-white text-sm">
+                  <div className="flex items-center gap-2 text-white text-xs sm:text-sm">
                     <span className="text-green-400">✓</span>
                     <span>Diskon Hingga 20%</span>
                   </div>
-                  <div className="flex items-center gap-2 text-white text-sm">
+                  <div className="flex items-center gap-2 text-white text-xs sm:text-sm">
                     <span className="text-green-400">✓</span>
                     <span>Support 24/7</span>
                   </div>
@@ -144,14 +144,14 @@ export default function Bundling() {
                 <div className="border-t border-white/20 pt-4">
                   <div className="mb-4">
                     <div className="text-xs text-gray-300 mb-1">Mulai dari</div>
-                    <div className="text-2xl font-bold text-white">
+                    <div className="text-lg sm:text-2xl font-bold text-white">
                       Rp 50.000
                     </div>
                   </div>
 
                   <Link
                     href="#contact"
-                    className="block w-full bg-white hover:bg-gray-200 text-[#041A2F] text-center py-2 rounded-full text-sm font-bold transition-colors"
+                    className="block w-full bg-white hover:bg-gray-200 text-[#041A2F] text-center py-2 rounded-full text-xs sm:text-sm font-bold transition-colors"
                   >
                     Request Custom
                   </Link>
@@ -162,7 +162,7 @@ export default function Bundling() {
 
           {/* Right Side - 1 large featured bundle */}
           <div className="bg-linear-to-br from-yellow-500 via-orange-500 to-red-500 rounded-3xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-3xl">
-            <div className="p-8 lg:p-10 h-full flex flex-col">
+            <div className="p-6 sm:p-8 lg:p-10 h-full flex flex-col">
               <div className="flex items-center justify-between mb-6">
                 <span className="bg-black text-white px-6 py-3 rounded-full text-base font-bold">
                   🔥 BEST DEAL

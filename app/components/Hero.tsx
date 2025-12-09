@@ -1,5 +1,3 @@
-import Link from "next/link";
-import Image from "next/image";
 import PromoCarousel from "./PromoCarousel";
 
 export default function Hero() {
