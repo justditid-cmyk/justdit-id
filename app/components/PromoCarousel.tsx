@@ -2,60 +2,94 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { getPromos } from "@/sanity/queries";
+import { urlFor } from "@/sanity/lib/image";
+
+interface Promo {
+  _id: string;
+  title: string;
+  subtitle: string;
+  promoTitle: string;
+  validUntil: string;
+  image: any;
+  bgColor: string;
+  buttonLink?: string;
+  order: number;
+}
+
+// Fallback promos when Sanity is not configured
+const fallbackPromos = [
+  {
+    _id: "1",
+    title: "Flash Sale Netflix Premium",
+    subtitle: "Diskon 50% - Hanya Hari Ini!",
+    bgColor: "from-red-600 to-red-800",
+    promoTitle: "Promo Netflix Ultra HD",
+    validUntil: "2025-12-31",
+    image: null,
+    order: 0,
+  },
+  {
+    _id: "2",
+    title: "Spotify Premium Murah",
+    subtitle: "Mulai Rp 15.000/Bulan",
+    bgColor: "from-green-600 to-green-800",
+    promoTitle: "Spotify Premium Spesial",
+    validUntil: "2025-12-25",
+    image: null,
+    order: 1,
+  },
+  {
+    _id: "3",
+    title: "Disney+ Hotstar Spesial",
+    subtitle: "Beli 2 Gratis 1 Bulan",
+    bgColor: "from-blue-600 to-blue-800",
+    promoTitle: "Paket Disney+ Hemat",
+    validUntil: "2025-12-30",
+    image: null,
+    order: 2,
+  },
+];
 
 export default function PromoCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [promos, setPromos] = useState<Promo[]>(fallbackPromos);
+  const [loading, setLoading] = useState(true);
 
-  const promos = [
-    {
-      id: 1,
-      title: "Flash Sale Netflix Premium",
-      subtitle: "Diskon 50% - Hanya Hari Ini!",
-      bgColor: "from-red-600 to-red-800",
-      placeholder: "/promo-1.jpg",
-      promoTitle: "Promo Netflix Ultra HD",
-      validUntil: "31 Desember 2025",
-    },
-    {
-      id: 2,
-      title: "Spotify Premium Murah",
-      subtitle: "Mulai Rp 15.000/Bulan",
-      bgColor: "from-green-600 to-green-800",
-      placeholder: "/promo-2.jpg",
-      promoTitle: "Spotify Premium Spesial",
-      validUntil: "25 Desember 2025",
-    },
-    {
-      id: 3,
-      title: "Disney+ Hotstar Spesial",
-      subtitle: "Beli 2 Gratis 1 Bulan",
-      bgColor: "from-blue-600 to-blue-800",
-      placeholder: "/promo-3.jpg",
-      promoTitle: "Paket Disney+ Hemat",
-      validUntil: "30 Desember 2025",
-    },
-    {
-      id: 4,
-      title: "YouTube Premium Keluarga",
-      subtitle: "Hemat 40% - Limited Stock",
-      bgColor: "from-red-500 to-orange-600",
-      placeholder: "/promo-4.jpg",
-      promoTitle: "YouTube Premium Family",
-      validUntil: "28 Desember 2025",
-    },
-    {
-      id: 5,
-      title: "Paket Bundling Ultimate",
-      subtitle: "Netflix + Spotify + Disney+ = Super Hemat!",
-      bgColor: "from-purple-600 to-pink-600",
-      placeholder: "/promo-5.jpg",
-      promoTitle: "Ultimate Bundle Package",
-      validUntil: "31 Desember 2025",
-    },
-  ];
+  // Fetch promos from Sanity
+  useEffect(() => {
+    async function fetchPromos() {
+      try {
+        // Check if Sanity is configured
+        const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+        if (!projectId || projectId === "placeholder-123") {
+          console.log("Sanity not configured, using fallback promos");
+          setPromos(fallbackPromos);
+          setLoading(false);
+          return;
+        }
+
+        const data = await getPromos();
+        if (data && data.length > 0) {
+          setPromos(data);
+        } else {
+          setPromos(fallbackPromos);
+        }
+      } catch (error) {
+        console.error("Error fetching promos, using fallback:", error);
+        setPromos(fallbackPromos);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPromos();
+  }, []);
 
   // Auto-slide every 4 seconds
   useEffect(() => {
+    if (promos.length === 0) return;
+
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % promos.length);
     }, 4000);
@@ -75,36 +109,73 @@ export default function PromoCarousel() {
     setCurrentSlide((prev) => (prev - 1 + promos.length) % promos.length);
   };
 
+  // Format date to readable format
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] max-h-[400px] sm:max-h-[500px] mb-8 sm:mb-16 bg-[#28529C] rounded-2xl sm:rounded-3xl flex items-center justify-center">
+        <div className="text-white text-xl">Loading promos...</div>
+      </div>
+    );
+  }
+
+  if (promos.length === 0) {
+    return (
+      <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] max-h-[400px] sm:max-h-[500px] mb-8 sm:mb-16 bg-[#28529C] rounded-2xl sm:rounded-3xl flex items-center justify-center">
+        <div className="text-white text-xl">No promos available</div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] max-h-[400px] sm:max-h-[500px] mb-8 sm:mb-16 group">
       {/* Carousel Container */}
       <div className="relative h-full overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl">
         {promos.map((promo, index) => (
           <div
-            key={promo.id}
+            key={promo._id}
             className={`absolute inset-0 transition-all duration-700 ease-in-out ${
               index === currentSlide
                 ? "opacity-100 translate-x-0"
                 : index < currentSlide
-                ? "opacity-0 -translate-x-full"
-                : "opacity-0 translate-x-full"
+                  ? "opacity-0 -translate-x-full"
+                  : "opacity-0 translate-x-full"
             }`}
           >
-            {/* Background Gradient */}
+            {/* Background Image */}
+            {promo.image && (
+              <Image
+                src={urlFor(promo.image).width(1920).height(1080).url()}
+                alt={promo.title}
+                fill
+                className="object-cover"
+                priority={index === 0}
+              />
+            )}
+
+            {/* Background Gradient Overlay */}
             <div
-              className={`absolute inset-0 bg-linear-to-br ${promo.bgColor}`}
+              className={`absolute inset-0 bg-gradient-to-br ${promo.bgColor} opacity-80`}
             ></div>
 
-            {/* Placeholder Image Overlay */}
+            {/* Content Overlay */}
             <div className="absolute inset-0 bg-black/20 flex items-center justify-center px-4 sm:px-8">
               <div className="text-center max-w-full">
                 <div className="bg-yellow-400 text-gray-900 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg inline-block mb-2 sm:mb-4 text-xs sm:text-sm font-bold">
-                  PROMO #{promo.id}
+                  PROMO #{index + 1}
                 </div>
-                <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white mb-2 sm:mb-4 leading-tight">
+                <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white mb-2 sm:mb-4 leading-tight drop-shadow-lg">
                   {promo.title}
                 </h2>
-                <p className="text-sm sm:text-xl md:text-2xl text-white/90">
+                <p className="text-sm sm:text-xl md:text-2xl text-white/90 drop-shadow-lg">
                   {promo.subtitle}
                 </p>
               </div>
@@ -117,12 +188,23 @@ export default function PromoCarousel() {
                   {promo.promoTitle}
                 </h3>
                 <p className="text-white/80 text-xs sm:text-sm md:text-base truncate">
-                  Berlaku hingga: {promo.validUntil}
+                  Berlaku hingga: {formatDate(promo.validUntil)}
                 </p>
               </div>
-              <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-3 py-2 sm:px-6 sm:py-3 rounded-full text-xs sm:text-base transition-all transform hover:scale-105 whitespace-nowrap shrink-0">
-                Dapatkan
-              </button>
+              {promo.buttonLink ? (
+                <a
+                  href={promo.buttonLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-3 py-2 sm:px-6 sm:py-3 rounded-full text-xs sm:text-base transition-all transform hover:scale-105 whitespace-nowrap shrink-0"
+                >
+                  Dapatkan
+                </a>
+              ) : (
+                <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-3 py-2 sm:px-6 sm:py-3 rounded-full text-xs sm:text-base transition-all transform hover:scale-105 whitespace-nowrap shrink-0">
+                  Dapatkan
+                </button>
+              )}
             </div>
           </div>
         ))}

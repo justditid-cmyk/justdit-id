@@ -43,9 +43,9 @@ export default function Bundling() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Side - 4 small bundles in 2x2 grid */}
-          <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+          {/* Left Side - 4 small bundles in 2x2 grid (hidden on mobile, shown on md+) */}
+          <div className="hidden md:grid grid-cols-2 gap-4">
             {bundles.slice(0, 3).map((bundle, index) => (
               <div
                 key={index}
@@ -158,6 +158,70 @@ export default function Bundling() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Mobile View - Simple card carousel */}
+          <div className="md:hidden space-y-4">
+            {bundles.map((bundle, index) => (
+              <div
+                key={index}
+                className="bg-linear-to-br from-[#28529C] to-[#1e3d7a] rounded-2xl overflow-hidden shadow-xl"
+              >
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold">
+                      {bundle.badge}
+                    </span>
+                    <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                      -{bundle.discount}
+                    </span>
+                  </div>
+
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    {bundle.name}
+                  </h3>
+                  <p className="text-gray-200 text-sm mb-4">
+                    {bundle.description}
+                  </p>
+
+                  <div className="space-y-2 mb-4">
+                    {bundle.products.map((product, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 text-white text-sm"
+                      >
+                        <span className="text-green-400">✓</span>
+                        <span>{product}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="border-t border-white/20 pt-4">
+                    <div className="flex items-end gap-3 mb-4">
+                      <div>
+                        <div className="text-xs text-gray-300 mb-1">Normal</div>
+                        <div className="text-sm text-gray-400 line-through">
+                          Rp {bundle.originalPrice.toLocaleString("id-ID")}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-300 mb-1">Paket</div>
+                        <div className="text-2xl font-bold text-white">
+                          Rp {bundle.bundlePrice.toLocaleString("id-ID")}
+                        </div>
+                      </div>
+                    </div>
+
+                    <Link
+                      href="#contact"
+                      className="block w-full bg-white hover:bg-gray-200 text-[#041A2F] text-center py-3 rounded-full text-sm font-bold transition-colors"
+                    >
+                      Ambil Paket
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Right Side - 1 large featured bundle */}

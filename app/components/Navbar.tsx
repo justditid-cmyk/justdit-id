@@ -3,9 +3,22 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setIsMenuOpen(false);
+      setIsProfileOpen(false);
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-[#041A2F]/95 backdrop-blur-sm border-b border-white/10">
@@ -108,21 +121,64 @@ export default function Navbar() {
               </svg>
             </div>
 
-            {/* Daftar Button */}
-            <Link
-              href="#cta"
-              className="hidden md:block bg-[#28529C] hover:bg-[#1e3d7a] text-white px-6 py-2 rounded-full font-semibold transition-colors"
-            >
-              Daftar
-            </Link>
+            {/* Auth Buttons */}
+            {user ? (
+              <div className="hidden md:flex items-center gap-3 relative">
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="focus:outline-none"
+                >
+                  {user.photoURL ? (
+                    <Image
+                      src={user.photoURL}
+                      alt={user.displayName || "User"}
+                      width={40}
+                      height={40}
+                      className="rounded-full border-2 border-[#4E99BE] hover:border-[#3d7a99] transition-colors cursor-pointer"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-[#4E99BE] hover:bg-[#3d7a99] flex items-center justify-center text-white font-semibold transition-colors cursor-pointer">
+                      {user.email?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </button>
 
-            {/* Login Button */}
-            <Link
-              href="#contact"
-              className="hidden md:block text-white hover:text-blue-300 transition-colors font-semibold"
-            >
-              Login
-            </Link>
+                {/* Dropdown Menu */}
+                {isProfileOpen && (
+                  <div className="absolute right-0 top-12 mt-2 w-48 bg-[#28529C] rounded-lg shadow-xl border border-white/20 py-2 z-50">
+                    <div className="px-4 py-2 border-b border-white/20">
+                      <p className="text-white font-semibold text-sm">
+                        {user.displayName || "User"}
+                      </p>
+                      <p className="text-gray-400 text-xs truncate">
+                        {user.email}
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-red-400 hover:bg-white/10 transition-colors text-sm font-semibold"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="hidden md:flex items-center gap-4">
+                <Link
+                  href="/register"
+                  className="bg-[#28529C] hover:bg-[#1e3d7a] text-white px-6 py-2 rounded-full font-semibold transition-colors"
+                >
+                  Daftar
+                </Link>
+                <Link
+                  href="/login"
+                  className="text-white hover:text-blue-300 transition-colors font-semibold"
+                >
+                  Login
+                </Link>
+              </div>
+            )}
 
             {/* Shopping Cart */}
             <button className="text-white hover:text-blue-300 transition-colors p-2 relative">
@@ -183,20 +239,75 @@ export default function Navbar() {
             >
               Kontak
             </Link>
-            <Link
-              href="#cta"
-              onClick={() => setIsMenuOpen(false)}
-              className="block bg-[#28529C] hover:bg-[#1e3d7a] text-white px-6 py-2 rounded-full font-semibold transition-colors text-center"
-            >
-              Daftar
-            </Link>
-            <Link
-              href="#contact"
-              onClick={() => setIsMenuOpen(false)}
-              className="block text-white hover:text-blue-300 transition-colors font-semibold py-2"
-            >
-              Login
-            </Link>
+
+            {/* Mobile Auth Buttons */}
+            {user ? (
+              <>
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-3 py-2 border-t border-white/20 pt-4 w-full"
+                >
+                  <div className="text-white text-sm text-left flex-1">
+                    <p className="font-semibold">
+                      {user.displayName || "User"}
+                    </p>
+                    <p className="text-gray-400 text-xs">{user.email}</p>
+                  </div>
+                  <svg
+                    className={`w-5 h-5 text-white transition-transform ${isProfileOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                  {user.photoURL ? (
+                    <Image
+                      src={user.photoURL}
+                      alt={user.displayName || "User"}
+                      width={40}
+                      height={40}
+                      className="rounded-full border-2 border-[#4E99BE]"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-[#4E99BE] flex items-center justify-center text-white font-semibold">
+                      {user.email?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </button>
+
+                {isProfileOpen && (
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-semibold transition-colors text-center"
+                  >
+                    Logout
+                  </button>
+                )}
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/register"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block bg-[#28529C] hover:bg-[#1e3d7a] text-white px-6 py-2 rounded-full font-semibold transition-colors text-center"
+                >
+                  Daftar
+                </Link>
+                <Link
+                  href="/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block text-white hover:text-blue-300 transition-colors font-semibold py-2"
+                >
+                  Login
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
