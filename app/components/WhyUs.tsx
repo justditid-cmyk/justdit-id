@@ -1,5 +1,12 @@
-export default function WhyUs() {
-  const benefits = [
+import { Homepage } from "@/sanity/queries";
+
+interface WhyUsProps {
+  data?: Homepage | null;
+}
+
+export default function WhyUs({ data }: WhyUsProps) {
+  // Default features if CMS data is not available
+  const defaultFeatures = [
     {
       icon: "✓",
       title: "Akun Resmi dan Legal",
@@ -17,9 +24,25 @@ export default function WhyUs() {
     },
   ];
 
+  const benefits = data?.whyUsFeatures || defaultFeatures;
+
   return (
     <section className="py-2 sm:py-6 bg-[#041A2F]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {(data?.whyUsHeading || data?.whyUsSubheading) && (
+          <div className="text-center mb-8">
+            {data?.whyUsHeading && (
+              <h2 className="text-3xl font-bold text-white mb-3">
+                {data.whyUsHeading}
+              </h2>
+            )}
+            {data?.whyUsSubheading && (
+              <p className="text-gray-300 max-w-2xl mx-auto">
+                {data.whyUsSubheading}
+              </p>
+            )}
+          </div>
+        )}
         <div className="grid grid-cols-3 gap-2 sm:gap-6">
           {benefits.map((benefit, index) => (
             <div

@@ -10,14 +10,26 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { auth, db } from "@/lib/firebase";
+
+export type UserRole = 'buyer' | 'reseller' | 'admin';
+
+export interface UserProfile {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+  role: UserRole;
+}
 
 interface AuthContextType {
   user: User | null;
+  userProfile: UserProfile | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, role?: UserRole) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: (role?: UserRole) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -33,36 +45,103 @@ export const useAuth = () => {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetch user profile from Firestore
+  const fetchUserProfile = async (uid: string): Promise<UserProfile | null> => {
+    try {
+      const userDocRef = doc(db, "users", uid);
+      const userDoc = await getDoc(userDocRef);
+      
+      if (userDoc.exists()) {
+        return userDoc.data() as UserProfile;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      return null;
+    }
+  };
+
+  // Create user profile in Firestore
+  const createUserProfile = async (
+    user: User,
+    role: UserRole = 'buyer'
+  ): Promise<void> => {
+    try {
+      const userDocRef = doc(db, "users", user.uid);
+      const profile: UserProfile = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        role,
+      };
+      await setDoc(userDocRef, profile, { merge: true });
+      setUserProfile(profile);
+    } catch (error) {
+      console.error("Error creating user profile:", error);
+    }
+  };
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
+      
+      if (user) {
+        const profile = await fetchUserProfile(user.uid);
+        if (profile) {
+          setUserProfile(profile);
+        } else {
+          // Create profile with default buyer role if doesn't exist
+          await createUserProfile(user, 'buyer');
+        }
+      } else {
+        setUserProfile(null);
+      }
+      
       setLoading(false);
     });
 
     return unsubscribe;
   }, []);
 
-  const signUp = async (email: string, password: string) => {
-    await createUserWithEmailAndPassword(auth, email, password);
+  const signUp = async (email: string, password: string, role: UserRole = 'buyer') => {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await createUserProfile(userCredential.user, role);
   };
 
   const signIn = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const profile = await fetchUserProfile(userCredential.user.uid);
+    if (profile) {
+      setUserProfile(profile);
+    }
   };
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (role: UserRole = 'buyer') => {
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    const userCredential = await signInWithPopup(auth, provider);
+    
+    // Check if user already has a profile
+    const existingProfile = await fetchUserProfile(userCredential.user.uid);
+    if (!existingProfile) {
+      // New user - create profile with specified role
+      await createUserProfile(userCredential.user, role);
+    } else {
+      setUserProfile(existingProfile);
+    }
   };
 
   const logout = async () => {
     await signOut(auth);
+    setUserProfile(null);
   };
 
   const value = {
     user,
+    userProfile,
     loading,
     signUp,
     signIn,
@@ -72,7 +151,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }

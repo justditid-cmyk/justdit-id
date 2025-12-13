@@ -1,6 +1,12 @@
 import Link from "next/link";
+import { Bundle, Homepage } from "@/sanity/queries";
 
-export default function Bundling() {
+interface BundlingProps {
+  bundles?: Bundle[];
+  data?: Homepage | null;
+}
+
+export default function Bundling({ bundles: cmsBundles, data }: BundlingProps) {
   const bundles = [
     {
       name: "Paket Streaming",
@@ -36,10 +42,10 @@ export default function Bundling() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Paket Bundling Hemat
+            {data?.bundlingHeading || "Paket Bundling Hemat"}
           </h2>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            Kombinasi produk pilihan dengan harga lebih hemat hingga 20%
+            {data?.bundlingSubheading || "Kombinasi produk pilihan dengan harga lebih hemat hingga 20%"}
           </p>
         </div>
 

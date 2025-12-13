@@ -7,8 +7,8 @@ export default defineConfig({
   name: "default",
   title: "JustDit.id",
 
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "",
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
+  projectId: "z88p0m8n",
+  dataset: "production",
 
   plugins: [structureTool(), visionTool()],
 

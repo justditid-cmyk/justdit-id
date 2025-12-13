@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -12,7 +12,14 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn, signInWithGoogle, userProfile } = useAuth();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (userProfile) {
+      router.push(`/dashboard/${userProfile.role}`);
+    }
+  }, [userProfile, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,10 +28,9 @@ export default function LoginPage() {
 
     try {
       await signIn(email, password);
-      router.push("/");
+      // Redirect will happen via useEffect when userProfile updates
     } catch (error) {
       setError(error.message || "Gagal masuk");
-    } finally {
       setLoading(false);
     }
   };
@@ -35,10 +41,9 @@ export default function LoginPage() {
 
     try {
       await signInWithGoogle();
-      router.push("/");
+      // Redirect will happen via useEffect when userProfile updates
     } catch (error) {
       setError(error.message || "Gagal masuk dengan Google");
-    } finally {
       setLoading(false);
     }
   };

@@ -6,22 +6,8 @@ export default defineType({
   type: "document",
   fields: [
     defineField({
-      name: "title",
-      title: "Title",
-      type: "string",
-      description: 'Main promo title (e.g., "Flash Sale Netflix Premium")',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: "subtitle",
-      title: "Subtitle",
-      type: "string",
-      description: 'Subtitle text (e.g., "Diskon 50% - Hanya Hari Ini!")',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
       name: "promoTitle",
-      title: "Promo Title (Bottom Bar)",
+      title: "Promo Title",
       type: "string",
       description: "Title shown in the bottom info bar",
       validation: (Rule) => Rule.required(),
@@ -37,25 +23,17 @@ export default defineType({
       name: "image",
       title: "Promo Image",
       type: "image",
-      description: "Upload promo background image (recommended: 1920x1080px)",
+      description: "Upload promo image (recommended: 1920x1080px). The image will be displayed clean without text overlay.",
       options: {
         hotspot: true,
       },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "bgColor",
-      title: "Background Gradient",
-      type: "string",
-      description:
-        'Tailwind gradient classes (e.g., "from-red-600 to-red-800")',
-      initialValue: "from-blue-600 to-blue-800",
-    }),
-    defineField({
       name: "buttonLink",
       title: "Button Link",
       type: "url",
-      description: 'Link when "Dapatkan" button is clicked',
+      description: 'Link when "Dapatkan" button is clicked (optional)',
     }),
     defineField({
       name: "order",
@@ -74,7 +52,7 @@ export default defineType({
   ],
   preview: {
     select: {
-      title: "title",
+      title: "promoTitle",
       subtitle: "validUntil",
       media: "image",
     },

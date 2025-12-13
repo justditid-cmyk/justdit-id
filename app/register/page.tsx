@@ -1,19 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth, UserRole } from "@/context/AuthContext";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState<UserRole>("buyer");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp, signInWithGoogle, userProfile } = useAuth();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (userProfile) {
+      router.push(`/dashboard/${userProfile.role}`);
+    }
+  }, [userProfile, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,8 +41,8 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      await signUp(email, password);
-      router.push("/");
+      await signUp(email, password, role);
+      // Redirect will happen via useEffect when userProfile updates
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setError("Email sudah terdaftar");
@@ -43,7 +51,6 @@ export default function RegisterPage() {
       } else {
         setError(error.message || "Gagal mendaftar");
       }
-    } finally {
       setLoading(false);
     }
   };
@@ -53,11 +60,10 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      await signInWithGoogle();
-      router.push("/");
+      await signInWithGoogle(role);
+      // Redirect will happen via useEffect when userProfile updates
     } catch (error) {
       setError(error.message || "Gagal mendaftar dengan Google");
-    } finally {
       setLoading(false);
     }
   };
@@ -146,6 +152,46 @@ export default function RegisterPage() {
                 className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:border-[#4E99BE] transition-colors"
                 placeholder="Ulangi password"
               />
+            </div>
+
+            <div>
+              <label className="block text-white font-semibold mb-3">
+                Daftar Sebagai
+              </label>
+              <div className="space-y-3">
+                <label className="flex items-center gap-3 p-4 bg-white/5 rounded-lg border border-white/20 cursor-pointer hover:bg-white/10 transition-colors">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="buyer"
+                    checked={role === "buyer"}
+                    onChange={(e) => setRole(e.target.value as UserRole)}
+                    className="w-4 h-4"
+                  />
+                  <div>
+                    <p className="text-white font-semibold">Pembeli</p>
+                    <p className="text-gray-400 text-sm">
+                      Beli akun premium untuk kebutuhan pribadi
+                    </p>
+                  </div>
+                </label>
+                <label className="flex items-center gap-3 p-4 bg-white/5 rounded-lg border border-white/20 cursor-pointer hover:bg-white/10 transition-colors">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="reseller"
+                    checked={role === "reseller"}
+                    onChange={(e) => setRole(e.target.value as UserRole)}
+                    className="w-4 h-4"
+                  />
+                  <div>
+                    <p className="text-white font-semibold">Reseller</p>
+                    <p className="text-gray-400 text-sm">
+                      Jual produk dan dapatkan komisi menarik
+                    </p>
+                  </div>
+                </label>
+              </div>
             </div>
 
             <button

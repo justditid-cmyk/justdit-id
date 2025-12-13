@@ -17,8 +17,8 @@ interface Promo {
   order: number;
 }
 
-// Fallback promos when Sanity is not configured
-const fallbackPromos = [
+// Fallback promos when Sanity is empty
+const fallbackPromos: Promo[] = [
   {
     _id: "1",
     title: "Flash Sale Netflix Premium",
@@ -28,6 +28,7 @@ const fallbackPromos = [
     validUntil: "2025-12-31",
     image: null,
     order: 0,
+    isActive: true,
   },
   {
     _id: "2",
@@ -48,65 +49,39 @@ const fallbackPromos = [
     validUntil: "2025-12-30",
     image: null,
     order: 2,
+    isActive: true,
   },
 ];
 
-export default function PromoCarousel() {
+interface PromoCarouselProps {
+  promos?: Promo[];
+}
+
+export default function PromoCarousel({ promos: initialPromos }: PromoCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [promos, setPromos] = useState<Promo[]>(fallbackPromos);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch promos from Sanity
-  useEffect(() => {
-    async function fetchPromos() {
-      try {
-        // Check if Sanity is configured
-        const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-        if (!projectId || projectId === "placeholder-123") {
-          console.log("Sanity not configured, using fallback promos");
-          setPromos(fallbackPromos);
-          setLoading(false);
-          return;
-        }
-
-        const data = await getPromos();
-        if (data && data.length > 0) {
-          setPromos(data);
-        } else {
-          setPromos(fallbackPromos);
-        }
-      } catch (error) {
-        console.error("Error fetching promos, using fallback:", error);
-        setPromos(fallbackPromos);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchPromos();
-  }, []);
+  const displayPromos = initialPromos && initialPromos.length > 0 ? initialPromos : fallbackPromos;
 
   // Auto-slide every 4 seconds
   useEffect(() => {
-    if (promos.length === 0) return;
+    if (displayPromos.length === 0) return;
 
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % promos.length);
+      setCurrentSlide((prev) => (prev + 1) % displayPromos.length);
     }, 4000);
 
     return () => clearInterval(timer);
-  }, [promos.length]);
+  }, [displayPromos.length]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
   };
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % promos.length);
+    setCurrentSlide((prev) => (prev + 1) % displayPromos.length);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + promos.length) % promos.length);
+    setCurrentSlide((prev) => (prev - 1 + displayPromos.length) % displayPromos.length);
   };
 
   // Format date to readable format
@@ -119,27 +94,11 @@ export default function PromoCarousel() {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] max-h-[400px] sm:max-h-[500px] mb-8 sm:mb-16 bg-[#28529C] rounded-2xl sm:rounded-3xl flex items-center justify-center">
-        <div className="text-white text-xl">Loading promos...</div>
-      </div>
-    );
-  }
-
-  if (promos.length === 0) {
-    return (
-      <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] max-h-[400px] sm:max-h-[500px] mb-8 sm:mb-16 bg-[#28529C] rounded-2xl sm:rounded-3xl flex items-center justify-center">
-        <div className="text-white text-xl">No promos available</div>
-      </div>
-    );
-  }
-
   return (
     <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] max-h-[400px] sm:max-h-[500px] mb-8 sm:mb-16 group">
       {/* Carousel Container */}
       <div className="relative h-full overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl">
-        {promos.map((promo, index) => (
+        {displayPromos.map((promo, index) => (
           <div
             key={promo._id}
             className={`absolute inset-0 transition-all duration-700 ease-in-out ${
@@ -160,26 +119,6 @@ export default function PromoCarousel() {
                 priority={index === 0}
               />
             )}
-
-            {/* Background Gradient Overlay */}
-            <div
-              className={`absolute inset-0 bg-gradient-to-br ${promo.bgColor} opacity-80`}
-            ></div>
-
-            {/* Content Overlay */}
-            <div className="absolute inset-0 bg-black/20 flex items-center justify-center px-4 sm:px-8">
-              <div className="text-center max-w-full">
-                <div className="bg-yellow-400 text-gray-900 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg inline-block mb-2 sm:mb-4 text-xs sm:text-sm font-bold">
-                  PROMO #{index + 1}
-                </div>
-                <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white mb-2 sm:mb-4 leading-tight drop-shadow-lg">
-                  {promo.title}
-                </h2>
-                <p className="text-sm sm:text-xl md:text-2xl text-white/90 drop-shadow-lg">
-                  {promo.subtitle}
-                </p>
-              </div>
-            </div>
 
             {/* Bottom Info Bar */}
             <div className="absolute bottom-0 left-0 right-0 h-[20%] sm:h-[18%] bg-[#727271]/90 backdrop-blur-md flex items-center justify-between px-3 sm:px-6 md:px-12 gap-2 sm:gap-4">
@@ -250,7 +189,7 @@ export default function PromoCarousel() {
 
       {/* Dots Indicator */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-        {promos.map((_, index) => (
+        {displayPromos.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}

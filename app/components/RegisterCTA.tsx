@@ -1,6 +1,17 @@
 import Link from "next/link";
+import { Homepage } from "@/sanity/queries";
 
-export default function RegisterCTA() {
+interface RegisterCTAProps {
+  data?: Homepage | null;
+}
+
+export default function RegisterCTA({ data }: RegisterCTAProps) {
+  const heading = data?.ctaHeading || "Daftar sekarang dan rasakan manfaatnya";
+  const description =
+    data?.ctaDescription ||
+    "Kelola transaksi dan pesanan anda menjadi lebih mudah kedalam keranjang. Jadi, tunggu apa lagi?";
+  const buttonText = data?.ctaButtonText || "Daftar Sekarang";
+
   return (
     <section className="py-16 sm:py-20 bg-[#041A2F]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -15,17 +26,16 @@ export default function RegisterCTA() {
           <div className="relative z-10">
             <div className="text-left max-w-4xl">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#42A6D7] mb-4 sm:mb-6">
-                Daftar sekarang dan rasakan manfaatnya
+                {heading}
               </h2>
               <p className="text-white text-base sm:text-lg lg:text-xl mb-8 sm:mb-10 max-w-3xl leading-relaxed">
-                Kelola transaksi dan pesanan anda menjadi lebih mudah kedalam
-                keranjang. Jadi, tunggu apa lagi?
+                {description}
               </p>
               <Link
                 href="#contact"
                 className="inline-block bg-[#28529C] hover:bg-[#1e3d7a] text-white px-8 sm:px-12 py-3 sm:py-4 rounded-full text-base sm:text-lg font-bold transition-all transform hover:scale-105 shadow-xl"
               >
-                Daftar Sekarang
+                {buttonText}
               </Link>
             </div>
           </div>

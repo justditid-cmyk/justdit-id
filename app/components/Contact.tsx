@@ -1,6 +1,19 @@
 import Link from "next/link";
+import { Homepage } from "@/sanity/queries";
 
-export default function Contact() {
+interface ContactProps {
+  data?: Homepage | null;
+}
+
+export default function Contact({ data }: ContactProps) {
+  const heading = data?.contactHeading || "Mari Terhubung";
+  const subheading =
+    data?.contactSubheading ||
+    "Dapatkan penawaran eksklusif dan dukungan terbaik untuk kebutuhan digital Anda";
+  const whatsappNumber = data?.whatsappNumber || "6281234567890";
+  const telegramUsername = data?.telegramUsername || "justditid";
+  const email = data?.email || "info@justdit.id";
+
   return (
     <section
       id="contact"
@@ -17,11 +30,10 @@ export default function Contact() {
           {/* Header */}
           <div className="text-center mb-16">
             <h2 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
-              Mari Terhubung
+              {heading}
             </h2>
             <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              Dapatkan penawaran eksklusif dan dukungan terbaik untuk kebutuhan
-              digital Anda
+              {subheading}
             </p>
           </div>
 
@@ -32,7 +44,7 @@ export default function Contact() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mb-12">
                 {/* WhatsApp */}
                 <Link
-                  href="https://wa.me/6281234567890"
+                  href={`https://wa.me/${whatsappNumber}`}
                   target="_blank"
                   className="group relative bg-[#28529C] backdrop-blur-sm rounded-2xl p-4 md:p-8 hover:bg-[#1e3d7a] transition-all duration-500 border border-white/10 hover:border-[#25D366]/50 hover:shadow-lg hover:shadow-[#25D366]/20"
                 >
@@ -83,7 +95,7 @@ export default function Contact() {
 
                 {/* Telegram */}
                 <Link
-                  href="https://t.me/justditid"
+                  href={`https://t.me/${telegramUsername}`}
                   target="_blank"
                   className="group relative bg-[#28529C] backdrop-blur-sm rounded-2xl p-4 md:p-8 hover:bg-[#1e3d7a] transition-all duration-500 border border-white/10 hover:border-[#0088cc]/50 hover:shadow-lg hover:shadow-[#0088cc]/20"
                 >
@@ -134,7 +146,7 @@ export default function Contact() {
 
                 {/* Email */}
                 <Link
-                  href="mailto:hello@justdit.id"
+                  href={`mailto:${email}`}
                   className="group relative bg-[#28529C] backdrop-blur-sm rounded-2xl p-4 md:p-8 hover:bg-[#1e3d7a] transition-all duration-500 border border-white/10 hover:border-[#EA4335]/50 hover:shadow-lg hover:shadow-[#EA4335]/20"
                 >
                   <div className="flex flex-col items-center text-center space-y-2 md:space-y-4">

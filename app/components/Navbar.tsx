@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, userProfile, logout } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -153,7 +153,21 @@ export default function Navbar() {
                       <p className="text-gray-400 text-xs truncate">
                         {user.email}
                       </p>
+                      {userProfile && (
+                        <p className="text-[#4E99BE] text-xs mt-1 capitalize">
+                          {userProfile.role}
+                        </p>
+                      )}
                     </div>
+                    {userProfile && (
+                      <Link
+                        href={`/dashboard/${userProfile.role}`}
+                        onClick={() => setIsProfileOpen(false)}
+                        className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 transition-colors text-sm font-semibold"
+                      >
+                        Dashboard
+                      </Link>
+                    )}
                     <button
                       onClick={handleLogout}
                       className="w-full text-left px-4 py-2 text-red-400 hover:bg-white/10 transition-colors text-sm font-semibold"

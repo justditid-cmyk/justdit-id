@@ -1,11 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { Product, Homepage } from "@/sanity/queries";
+import { urlFor } from "@/sanity/lib/image";
 
 type ProductCategory = "all" | "editing" | "streaming" | "edukasi" | "working";
 
-export default function PopularProducts() {
+interface PopularProductsProps {
+  products?: Product[];
+  data?: Homepage | null;
+}
+
+export default function PopularProducts({ products: cmsProducts, data }: PopularProductsProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -15,7 +23,8 @@ export default function PopularProducts() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
 
-  const products = [
+  // Fallback products if CMS is empty
+  const fallbackProducts = [
     {
       name: "Netflix Premium",
       description: "4K Ultra HD + Download",
@@ -125,6 +134,19 @@ export default function PopularProducts() {
       category: "working" as ProductCategory,
     },
   ];
+
+  // Transform CMS products to component format
+  const products = cmsProducts && cmsProducts.length > 0 
+    ? cmsProducts.map((product: any) => ({
+        name: product.name,
+        description: product.description || '',
+        price: product.plans?.[0]?.price ? `Rp ${product.plans[0].price.toLocaleString('id-ID')}` : 'Rp 0',
+        duration: product.plans?.[0]?.duration || '30 Hari',
+        image: product.image?.asset ? product.image : (product.logo?.asset ? product.logo : null),
+        badge: product.badge || 'Available',
+        category: (product.category || 'streaming') as ProductCategory,
+      }))
+    : fallbackProducts.map(p => ({ ...p, image: null }));
 
   const categories = [
     { id: "editing" as ProductCategory, label: "Editing" },
@@ -293,14 +315,23 @@ export default function PopularProducts() {
                   style={{ transitionDelay: `${index * 150}ms` }}
                 >
                   <div className="relative h-40 sm:h-48 bg-linear-to-br from-[#28529C] to-[#1e3d7a]">
-                    <div className="absolute top-2 sm:top-4 left-2 sm:left-4">
+                    <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-10">
                       <span className="bg-yellow-500 text-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold">
                         {product.badge}
                       </span>
                     </div>
-                    <div className="flex items-center justify-center h-full">
-                      <div className="text-4xl sm:text-6xl">🎬</div>
-                    </div>
+                    {product.image?.asset ? (
+                      <Image
+                        src={urlFor(product.image).width(400).height(300).url()}
+                        alt={product.name}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <div className="text-4xl sm:text-6xl">🎬</div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="p-3 sm:p-6">
@@ -379,14 +410,23 @@ export default function PopularProducts() {
                 className="bg-[#1a4573] rounded-xl sm:rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl"
               >
                 <div className="relative h-32 sm:h-40 bg-linear-to-br from-[#1a4573] to-[#112E56]">
-                  <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
+                  <div className="absolute top-2 sm:top-3 left-2 sm:left-3 z-10">
                     <span className="bg-yellow-500 text-black px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold">
                       {product.badge}
                     </span>
                   </div>
-                  <div className="flex items-center justify-center h-full">
-                    <div className="text-3xl sm:text-5xl">🎬</div>
-                  </div>
+                  {product.image?.asset ? (
+                    <Image
+                      src={urlFor(product.image).width(400).height(300).url()}
+                      alt={product.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full">
+                      <div className="text-3xl sm:text-5xl">🎬</div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="p-3 sm:p-5">
