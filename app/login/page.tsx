@@ -30,7 +30,7 @@ export default function LoginPage() {
       await signIn(email, password);
       // Redirect will happen via useEffect when userProfile updates
     } catch (error) {
-      setError(error.message || "Gagal masuk");
+      setError(error instanceof Error ? error.message : "Gagal masuk");
       setLoading(false);
     }
   };
@@ -43,7 +43,7 @@ export default function LoginPage() {
       await signInWithGoogle();
       // Redirect will happen via useEffect when userProfile updates
     } catch (error) {
-      setError(error.message || "Gagal masuk dengan Google");
+      setError(error instanceof Error ? error.message : "Gagal masuk dengan Google");
       setLoading(false);
     }
   };

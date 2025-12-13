@@ -28,7 +28,6 @@ const fallbackPromos: Promo[] = [
     validUntil: "2025-12-31",
     image: null,
     order: 0,
-    isActive: true,
   },
   {
     _id: "2",
@@ -49,7 +48,6 @@ const fallbackPromos: Promo[] = [
     validUntil: "2025-12-30",
     image: null,
     order: 2,
-    isActive: true,
   },
 ];
 
@@ -106,7 +104,7 @@ export default function PromoCarousel({
         {displayPromos.map((promo, index) => (
           <div
             key={promo._id}
-            className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+            className={`absolute inset-0 transition-all duration-700 ease-in-out flex flex-col ${
               index === currentSlide
                 ? "opacity-100 translate-x-0"
                 : index < currentSlide
@@ -114,19 +112,21 @@ export default function PromoCarousel({
                   : "opacity-0 translate-x-full"
             }`}
           >
-            {/* Background Image */}
-            {promo.image && (
-              <Image
-                src={urlFor(promo.image).width(1920).height(1080).url()}
-                alt={promo.title}
-                fill
-                className="object-cover"
-                priority={index === 0}
-              />
-            )}
+            {/* Background Image Container */}
+            <div className="relative flex-1 bg-gradient-to-br from-[#041A2F] to-[#28529C]">
+              {promo.image && (
+                <Image
+                  src={urlFor(promo.image).width(1920).height(1080).url()}
+                  alt={promo.title}
+                  fill
+                  className="object-contain"
+                  priority={index === 0}
+                />
+              )}
+            </div>
 
             {/* Bottom Info Bar */}
-            <div className="absolute bottom-0 left-0 right-0 h-[20%] sm:h-[18%] bg-[#727271]/90 backdrop-blur-md flex items-center justify-between px-3 sm:px-6 md:px-12 gap-2 sm:gap-4">
+            <div className="h-[20%] sm:h-[18%] bg-[#727271]/90 backdrop-blur-md flex items-center justify-between px-3 sm:px-6 md:px-12 gap-2 sm:gap-4">
               <div className="flex flex-col min-w-0 flex-1">
                 <h3 className="text-white font-bold text-sm sm:text-lg md:text-xl mb-0.5 sm:mb-1 truncate">
                   {promo.promoTitle}

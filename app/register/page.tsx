@@ -43,13 +43,13 @@ export default function RegisterPage() {
     try {
       await signUp(email, password, role);
       // Redirect will happen via useEffect when userProfile updates
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === "auth/email-already-in-use") {
         setError("Email sudah terdaftar");
       } else if (error.code === "auth/weak-password") {
         setError("Password terlalu lemah");
       } else {
-        setError(error.message || "Gagal mendaftar");
+        setError(error instanceof Error ? error.message : "Gagal mendaftar");
       }
       setLoading(false);
     }
@@ -63,7 +63,7 @@ export default function RegisterPage() {
       await signInWithGoogle(role);
       // Redirect will happen via useEffect when userProfile updates
     } catch (error) {
-      setError(error.message || "Gagal mendaftar dengan Google");
+      setError(error instanceof Error ? error.message : "Gagal mendaftar dengan Google");
       setLoading(false);
     }
   };
