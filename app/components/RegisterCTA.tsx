@@ -1,16 +1,17 @@
 import Link from "next/link";
-import { Homepage } from "@/sanity/queries";
+import { CTA } from "@/sanity/queries";
 
 interface RegisterCTAProps {
-  data?: Homepage | null;
+  data?: CTA | null;
 }
 
 export default function RegisterCTA({ data }: RegisterCTAProps) {
-  const heading = data?.ctaHeading || "Daftar sekarang dan rasakan manfaatnya";
+  const heading = data?.heading || "Daftar sekarang dan rasakan manfaatnya";
   const description =
-    data?.ctaDescription ||
+    data?.description ||
     "Kelola transaksi dan pesanan anda menjadi lebih mudah kedalam keranjang. Jadi, tunggu apa lagi?";
-  const buttonText = data?.ctaButtonText || "Daftar Sekarang";
+  const buttonText = data?.buttonText || "Daftar Sekarang";
+  const buttonLink = data?.buttonLink || "#contact";
 
   return (
     <section className="py-16 sm:py-20 bg-[#041A2F]">
@@ -32,7 +33,7 @@ export default function RegisterCTA({ data }: RegisterCTAProps) {
                 {description}
               </p>
               <Link
-                href="#contact"
+                href={buttonLink}
                 className="inline-block bg-[#28529C] hover:bg-[#1e3d7a] text-white px-8 sm:px-12 py-3 sm:py-4 rounded-full text-base sm:text-lg font-bold transition-all transform hover:scale-105 shadow-xl"
               >
                 {buttonText}

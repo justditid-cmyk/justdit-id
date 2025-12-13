@@ -73,6 +73,47 @@ export interface Tip {
   isActive: boolean;
 }
 
+export interface WhyUsFeature {
+  _id: string;
+  icon: string;
+  title: string;
+  description: string;
+  order: number;
+  isActive: boolean;
+}
+
+export interface CTA {
+  _id: string;
+  heading: string;
+  description: string;
+  buttonText: string;
+  buttonLink: string;
+  isActive: boolean;
+}
+
+export interface FAQ {
+  _id: string;
+  question: string;
+  answer: string;
+  order: number;
+  isActive: boolean;
+}
+
+export interface Contact {
+  _id: string;
+  heading: string;
+  subheading: string;
+  whatsappNumber: string;
+  telegramUsername: string;
+  instagramUsername: string;
+  email: string;
+  whatsappResponseTime?: string;
+  telegramMembers?: string;
+  emailResponseTime?: string;
+  instagramBadge?: string;
+  isActive: boolean;
+}
+
 export interface Homepage {
   heroHeading?: string;
   heroSubheading?: string;
@@ -91,14 +132,6 @@ export interface Homepage {
   bundlingSubheading?: string;
   tipsHeading?: string;
   tipsSubheading?: string;
-  ctaHeading?: string;
-  ctaDescription?: string;
-  ctaButtonText?: string;
-  contactHeading?: string;
-  contactSubheading?: string;
-  whatsappNumber?: string;
-  telegramUsername?: string;
-  email?: string;
 }
 
 export async function getPromos(): Promise<Promo[]> {
@@ -132,15 +165,7 @@ export async function getHomepage(): Promise<Homepage | null> {
     bundlingHeading,
     bundlingSubheading,
     tipsHeading,
-    tipsSubheading,
-    ctaHeading,
-    ctaDescription,
-    ctaButtonText,
-    contactHeading,
-    contactSubheading,
-    whatsappNumber,
-    telegramUsername,
-    email
+    tipsSubheading
   }`;
 
   return client.fetch(query);
@@ -218,6 +243,86 @@ export async function getTips(limit?: number): Promise<Tip[]> {
         order,
         isActive
       }`;
+
+  return client.fetch(query);
+}
+
+export async function getTipBySlug(slug: string): Promise<Tip | null> {
+  const query = `*[_type == "tip" && slug.current == $slug][0] {
+    _id,
+    title,
+    slug,
+    excerpt,
+    content,
+    category,
+    coverImage,
+    author,
+    publishedAt,
+    order,
+    isActive
+  }`;
+
+  return client.fetch(query, { slug });
+}
+
+export async function getAllTipSlugs(): Promise<string[]> {
+  const query = `*[_type == "tip" && isActive == true].slug.current`;
+  return client.fetch(query);
+}
+
+export async function getWhyUsFeatures(): Promise<WhyUsFeature[]> {
+  const query = `*[_type == "whyUsFeature" && isActive == true] | order(order asc) {
+    _id,
+    icon,
+    title,
+    description,
+    order,
+    isActive
+  }`;
+
+  return client.fetch(query);
+}
+
+export async function getCTA(): Promise<CTA | null> {
+  const query = `*[_type == "cta" && isActive == true][0] {
+    _id,
+    heading,
+    description,
+    buttonText,
+    buttonLink,
+    isActive
+  }`;
+
+  return client.fetch(query);
+}
+
+export async function getFAQs(): Promise<FAQ[]> {
+  const query = `*[_type == "faq" && isActive == true] | order(order asc) {
+    _id,
+    question,
+    answer,
+    order,
+    isActive
+  }`;
+
+  return client.fetch(query);
+}
+
+export async function getContact(): Promise<Contact | null> {
+  const query = `*[_type == "contact" && isActive == true][0] {
+    _id,
+    heading,
+    subheading,
+    whatsappNumber,
+    telegramUsername,
+    instagramUsername,
+    email,
+    whatsappResponseTime,
+    telegramMembers,
+    emailResponseTime,
+    instagramBadge,
+    isActive
+  }`;
 
   return client.fetch(query);
 }

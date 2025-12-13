@@ -1,18 +1,23 @@
 import Link from "next/link";
-import { Homepage } from "@/sanity/queries";
+import { Contact as ContactData } from "@/sanity/queries";
 
 interface ContactProps {
-  data?: Homepage | null;
+  data?: ContactData | null;
 }
 
 export default function Contact({ data }: ContactProps) {
-  const heading = data?.contactHeading || "Mari Terhubung";
+  const heading = data?.heading || "Mari Terhubung";
   const subheading =
-    data?.contactSubheading ||
+    data?.subheading ||
     "Dapatkan penawaran eksklusif dan dukungan terbaik untuk kebutuhan digital Anda";
   const whatsappNumber = data?.whatsappNumber || "6281234567890";
   const telegramUsername = data?.telegramUsername || "justditid";
+  const instagramUsername = data?.instagramUsername || "justditid";
   const email = data?.email || "info@justdit.id";
+  const whatsappResponseTime = data?.whatsappResponseTime || "< 5 menit";
+  const telegramMembers = data?.telegramMembers || "1000+ Members";
+  const emailResponseTime = data?.emailResponseTime || "< 24 jam";
+  const instagramBadge = data?.instagramBadge || "Daily Updates";
 
   return (
     <section
@@ -69,10 +74,10 @@ export default function Contact({ data }: ContactProps) {
                         Chat langsung dengan tim kami
                       </p>
                       <p className="text-white font-semibold text-xs md:text-base hidden md:block">
-                        +62 812-3456-7890
+                        +{whatsappNumber}
                       </p>
                       <span className="inline-block mt-1 md:mt-3 text-xs text-[#25D366] bg-[#25D366]/10 px-2 md:px-3 py-1 rounded-full">
-                        &lt; 5 menit
+                        {whatsappResponseTime}
                       </span>
                     </div>
                     <div className="absolute bottom-2 md:bottom-4 right-2 md:right-4 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -120,10 +125,10 @@ export default function Contact({ data }: ContactProps) {
                         Join komunitas kami
                       </p>
                       <p className="text-white font-semibold text-xs md:text-base hidden md:block">
-                        @justditid
+                        @{telegramUsername}
                       </p>
                       <span className="inline-block mt-1 md:mt-3 text-xs text-[#0088cc] bg-[#0088cc]/10 px-2 md:px-3 py-1 rounded-full">
-                        1000+ Members
+                        {telegramMembers}
                       </span>
                     </div>
                     <div className="absolute bottom-2 md:bottom-4 right-2 md:right-4 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -176,10 +181,10 @@ export default function Contact({ data }: ContactProps) {
                         Untuk pertanyaan detail
                       </p>
                       <p className="text-white font-semibold text-xs md:text-base hidden md:block">
-                        hello@justdit.id
+                        {email}
                       </p>
                       <span className="inline-block mt-1 md:mt-3 text-xs text-[#EA4335] bg-[#EA4335]/10 px-2 md:px-3 py-1 rounded-full">
-                        &lt; 24 jam
+                        {emailResponseTime}
                       </span>
                     </div>
                     <div className="absolute bottom-2 md:bottom-4 right-2 md:right-4 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -202,7 +207,7 @@ export default function Contact({ data }: ContactProps) {
 
                 {/* Instagram - New 4th card */}
                 <Link
-                  href="https://instagram.com/justditid"
+                  href={`https://instagram.com/${instagramUsername}`}
                   target="_blank"
                   className="group relative bg-[#28529C] backdrop-blur-sm rounded-2xl p-4 md:p-8 hover:bg-[#1e3d7a] transition-all duration-500 border border-white/10 hover:border-[#E4405F]/50 hover:shadow-lg hover:shadow-[#E4405F]/20"
                 >
@@ -227,10 +232,10 @@ export default function Contact({ data }: ContactProps) {
                         Follow untuk update terbaru
                       </p>
                       <p className="text-white font-semibold text-xs md:text-base hidden md:block">
-                        @justditid
+                        @{instagramUsername}
                       </p>
                       <span className="inline-block mt-1 md:mt-3 text-xs text-[#E4405F] bg-[#E4405F]/10 px-2 md:px-3 py-1 rounded-full">
-                        Daily Updates
+                        {instagramBadge}
                       </span>
                     </div>
                     <div className="absolute bottom-2 md:bottom-4 right-2 md:right-4 opacity-0 group-hover:opacity-100 transition-opacity">

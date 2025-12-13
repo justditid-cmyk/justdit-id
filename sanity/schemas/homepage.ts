@@ -111,59 +111,6 @@ export default defineType({
       type: "text",
       initialValue: "Panduan lengkap untuk memaksimalkan pengalaman Anda",
     }),
-
-    // CTA Section
-    defineField({
-      name: "ctaHeading",
-      title: "CTA Heading",
-      type: "string",
-      initialValue: "Siap Untuk Memulai?",
-    }),
-    defineField({
-      name: "ctaDescription",
-      title: "CTA Description",
-      type: "text",
-      rows: 3,
-      initialValue:
-        "Bergabunglah dengan ribuan pengguna yang sudah mempercayai kami untuk kebutuhan akun premium mereka.",
-    }),
-    defineField({
-      name: "ctaButtonText",
-      title: "CTA Button Text",
-      type: "string",
-      initialValue: "Daftar Sekarang",
-    }),
-
-    // Contact Section
-    defineField({
-      name: "contactHeading",
-      title: "Contact Heading",
-      type: "string",
-      initialValue: "Hubungi Kami",
-    }),
-    defineField({
-      name: "contactSubheading",
-      title: "Contact Subheading",
-      type: "text",
-      initialValue: "Ada pertanyaan? Kami siap membantu Anda 24/7",
-    }),
-    defineField({
-      name: "whatsappNumber",
-      title: "WhatsApp Number",
-      type: "string",
-      description: "Format: 628123456789",
-    }),
-    defineField({
-      name: "telegramUsername",
-      title: "Telegram Username",
-      type: "string",
-      description: "Without @",
-    }),
-    defineField({
-      name: "email",
-      title: "Email",
-      type: "string",
-    }),
   ],
   preview: {
     prepare() {

@@ -1,10 +1,11 @@
-import { Homepage } from "@/sanity/queries";
+import { Homepage, WhyUsFeature } from "@/sanity/queries";
 
 interface WhyUsProps {
   data?: Homepage | null;
+  whyUsFeatures?: WhyUsFeature[];
 }
 
-export default function WhyUs({ data }: WhyUsProps) {
+export default function WhyUs({ data, whyUsFeatures }: WhyUsProps) {
   // Default features if CMS data is not available
   const defaultFeatures = [
     {
@@ -24,7 +25,8 @@ export default function WhyUs({ data }: WhyUsProps) {
     },
   ];
 
-  const benefits = data?.whyUsFeatures || defaultFeatures;
+  const benefits =
+    whyUsFeatures && whyUsFeatures.length > 0 ? whyUsFeatures : defaultFeatures;
 
   return (
     <section className="py-2 sm:py-6 bg-[#041A2F]">

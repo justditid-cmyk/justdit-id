@@ -2,17 +2,23 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Tip, Homepage } from "@/sanity/queries";
+import { Tip, Homepage, FAQ } from "@/sanity/queries";
 
 interface TipsTricksProps {
   tips?: Tip[];
   data?: Homepage | null;
+  faqs?: FAQ[];
 }
 
-export default function TipsTricks({ tips: cmsTips, data }: TipsTricksProps) {
+export default function TipsTricks({
+  tips: cmsTips,
+  data,
+  faqs: cmsFaqs,
+}: TipsTricksProps) {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
-  const featuredArticle = {
+  // Default fallback articles
+  const defaultFeaturedArticle = {
     title: "Panduan Lengkap Memilih Layanan Streaming Terbaik 2025",
     excerpt:
       "Temukan platform streaming yang paling cocok untuk kebutuhan hiburan Anda. Artikel ini membahas perbandingan lengkap Netflix, Disney+, Prime Video, dan platform lainnya dengan fitur, harga, dan konten eksklusif masing-masing.",
@@ -22,7 +28,7 @@ export default function TipsTricks({ tips: cmsTips, data }: TipsTricksProps) {
     image: "🎬",
   };
 
-  const articles = [
+  const defaultArticles = [
     {
       title: "10 Film Terbaik di Netflix Bulan Ini",
       excerpt: "Rekomendasi film dan series yang wajib ditonton",
@@ -53,7 +59,43 @@ export default function TipsTricks({ tips: cmsTips, data }: TipsTricksProps) {
     },
   ];
 
-  const faqs = [
+  // Use CMS tips if available, otherwise use defaults
+  const featuredArticle =
+    cmsTips && cmsTips.length > 0
+      ? {
+          title: cmsTips[0].title,
+          excerpt: cmsTips[0].excerpt,
+          category: cmsTips[0].category || "Featured Guide",
+          readTime: "8 min",
+          date: cmsTips[0].publishedAt
+            ? new Date(cmsTips[0].publishedAt).toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })
+            : "",
+          image: "🎬",
+        }
+      : defaultFeaturedArticle;
+
+  const articles =
+    cmsTips && cmsTips.length > 1
+      ? cmsTips.slice(1).map((tip) => ({
+          title: tip.title,
+          excerpt: tip.excerpt,
+          category: tip.category || "Info",
+          readTime: "5 min",
+          date: tip.publishedAt
+            ? new Date(tip.publishedAt).toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })
+            : "",
+        }))
+      : defaultArticles;
+
+  const defaultFaqs = [
     {
       question: "Bagaimana cara melakukan pemesanan?",
       answer:
@@ -85,6 +127,8 @@ export default function TipsTricks({ tips: cmsTips, data }: TipsTricksProps) {
         "Ya, kami menerima request paket custom sesuai kebutuhan Anda. Hubungi customer service kami untuk mendiskusikan produk-produk yang Anda inginkan dan kami akan buatkan paket dengan harga terbaik.",
     },
   ];
+
+  const faqs = cmsFaqs && cmsFaqs.length > 0 ? cmsFaqs : defaultFaqs;
 
   const toggleFaq = (index: number) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
@@ -132,12 +176,14 @@ export default function TipsTricks({ tips: cmsTips, data }: TipsTricksProps) {
                     <p className="text-gray-200 text-sm sm:text-base mb-4 line-clamp-3">
                       {featuredArticle.excerpt}
                     </p>
-                    <Link
-                      href="#"
-                      className="inline-block bg-white hover:bg-gray-200 text-[#28529C] px-6 py-2 rounded-full text-sm font-semibold transition-colors"
-                    >
-                      Baca Selengkapnya
-                    </Link>
+                    {cmsTips && cmsTips.length > 0 && cmsTips[0].slug && (
+                      <Link
+                        href={`/tips/${cmsTips[0].slug.current}`}
+                        className="inline-block bg-white hover:bg-gray-200 text-[#28529C] px-6 py-2 rounded-full text-sm font-semibold transition-colors"
+                      >
+                        Baca Selengkapnya
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
@@ -167,12 +213,14 @@ export default function TipsTricks({ tips: cmsTips, data }: TipsTricksProps) {
                     <p className="text-gray-200 text-xs sm:text-sm mb-3 line-clamp-2">
                       {article.excerpt}
                     </p>
-                    <Link
-                      href="#"
-                      className="text-yellow-400 hover:text-yellow-300 text-xs sm:text-sm font-semibold transition-colors"
-                    >
-                      Baca →
-                    </Link>
+                    {cmsTips && cmsTips[index + 1]?.slug && (
+                      <Link
+                        href={`/tips/${cmsTips[index + 1].slug.current}`}
+                        className="text-yellow-400 hover:text-yellow-300 text-xs sm:text-sm font-semibold transition-colors"
+                      >
+                        Baca →
+                      </Link>
+                    )}
                   </div>
                 </div>
               ))}

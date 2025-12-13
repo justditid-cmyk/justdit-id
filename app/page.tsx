@@ -13,37 +13,58 @@ import {
   getBundles,
   getTips,
   getPromos,
+  getWhyUsFeatures,
+  getCTA,
+  getFAQs,
+  getContact,
 } from "@/sanity/queries";
 
 interface HomeProps {
   searchParams: Promise<{ page?: string }>;
 }
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const revalidate = 0; // Disable cache during development (change to 60 for production)
 
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
 
   // Fetch all homepage data from Sanity
-  const [homepage, products, bundles, tips, promos] = await Promise.all([
+  const [
+    homepage,
+    products,
+    bundles,
+    tips,
+    promos,
+    whyUsFeatures,
+    cta,
+    faqs,
+    contact,
+  ] = await Promise.all([
     getHomepage(),
     getProducts(false), // All active products (not just featured)
     getBundles(),
     getTips(3), // Latest 3 tips
     getPromos(),
+    getWhyUsFeatures(),
+    getCTA(),
+    getFAQs(),
+    getContact(),
   ]);
+
+  // Debug: Log contact data
+  console.log("Contact data from Sanity:", contact);
 
   return (
     <div className="min-h-screen bg-[#041A2F]">
       <Navbar />
       <main>
         <Hero data={homepage} promos={promos} />
-        <WhyUs data={homepage} />
+        <WhyUs data={homepage} whyUsFeatures={whyUsFeatures} />
         <PopularProducts products={products} data={homepage} />
         <Bundling bundles={bundles} data={homepage} />
-        <RegisterCTA data={homepage} />
-        <TipsTricks tips={tips} data={homepage} />
-        <Contact data={homepage} />
+        <RegisterCTA data={cta} />
+        <TipsTricks tips={tips} data={homepage} faqs={faqs} />
+        <Contact data={contact} />
       </main>
       <Footer />
     </div>
