@@ -238,7 +238,7 @@ const seedData = {
       badge: "Popular",
       description: "Tools desain profesional dengan template premium unlimited",
       imageUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg",
+        "https://static.canva.com/web/images/12487a1e0770d29351bd4ce4f87ec8fe.svg",
       features: [
         "100+ juta foto & grafis premium",
         "Background remover",

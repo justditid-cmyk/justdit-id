@@ -22,7 +22,7 @@ export default function Contact({ data }: ContactProps) {
   return (
     <section
       id="contact"
-      className="py-20 bg-[#041A2F  ] relative overflow-hidden"
+      className="py-8 sm:py-12 bg-[#041A2F  ] relative overflow-hidden"
     >
       {/* Background decorative elements */}
       <div className="absolute inset-0 opacity-10">

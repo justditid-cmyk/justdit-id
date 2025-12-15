@@ -45,23 +45,25 @@ export default function WhyUs({ data, whyUsFeatures }: WhyUsProps) {
             )}
           </div>
         )}
-        <div className="grid grid-cols-3 gap-2 sm:gap-6">
-          {benefits.map((benefit, index) => (
-            <div
-              key={index}
-              className="bg-[#727271] rounded-lg sm:rounded-2xl p-2 sm:p-6 hover:transform hover:scale-105 transition-all duration-300 hover:shadow-2xl text-center"
-            >
-              <div className="text-base sm:text-4xl mb-0.5 sm:mb-3">
-                {benefit.icon}
+        <div className="overflow-x-auto scrollbar-hide -mx-4 sm:mx-0">
+          <div className="flex gap-3 sm:gap-6 px-4 sm:px-0 pb-2">
+            {benefits.map((benefit, index) => (
+              <div
+                key={index}
+                className="bg-[#727271] rounded-lg sm:rounded-2xl p-4 sm:p-6 hover:transform hover:scale-105 transition-all duration-300 hover:shadow-2xl text-center flex-shrink-0 w-[200px] sm:w-[280px]"
+              >
+                <div className="text-2xl sm:text-4xl mb-2 sm:mb-3">
+                  {benefit.icon}
+                </div>
+                <h3 className="text-sm sm:text-lg font-bold text-white mb-1 sm:mb-2 leading-tight">
+                  {benefit.title}
+                </h3>
+                <p className="text-gray-200 text-xs sm:text-sm leading-tight sm:leading-relaxed">
+                  {benefit.description}
+                </p>
               </div>
-              <h3 className="text-[10px] sm:text-lg font-bold text-white mb-0.5 sm:mb-2 leading-tight">
-                {benefit.title}
-              </h3>
-              <p className="text-gray-200 text-[8px] sm:text-sm leading-tight sm:leading-relaxed">
-                {benefit.description}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

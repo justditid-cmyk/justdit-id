@@ -14,7 +14,7 @@ export default function RegisterCTA({ data }: RegisterCTAProps) {
   const buttonLink = data?.buttonLink || "#contact";
 
   return (
-    <section className="py-16 sm:py-20 bg-[#041A2F]">
+    <section className="py-8 sm:py-12 bg-[#041A2F]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative rounded-3xl bg-[#0A163E] px-6 sm:px-8 lg:px-12 py-12 sm:py-16 lg:py-20 overflow-hidden">
           {/* Gradient Light Glow Effect */}

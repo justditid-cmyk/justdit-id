@@ -33,6 +33,21 @@ const nextConfig: NextConfig = {
         hostname: "logo.clearbit.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "static-00.iconduck.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.worldvectorlogo.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "static.canva.com",
+        pathname: "/**",
+      },
     ],
   },
 };
