@@ -322,7 +322,10 @@ export default function PopularProducts({
                       ? "opacity-100 translate-x-0"
                       : "opacity-0 translate-x-52"
                   }`}
-                  style={{ transitionDelay: `${index * 150}ms`, aspectRatio: '9/16' }}
+                  style={{
+                    transitionDelay: `${index * 150}ms`,
+                    aspectRatio: "9/16",
+                  }}
                 >
                   <div className="relative flex-1 bg-linear-to-br from-[#28529C] to-[#1e3d7a]">
                     <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-10">
@@ -418,7 +421,7 @@ export default function PopularProducts({
               <div
                 key={`${product.name}-${index}`}
                 className="bg-[#1a4573] rounded-xl sm:rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl flex flex-col"
-                style={{ aspectRatio: '9/16' }}
+                style={{ aspectRatio: "9/16" }}
               >
                 <div className="relative flex-1 bg-linear-to-br from-[#1a4573] to-[#112E56]">
                   <div className="absolute top-2 sm:top-3 left-2 sm:left-3 z-10">

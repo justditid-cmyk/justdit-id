@@ -156,11 +156,13 @@ export default function Bundling({ bundles: cmsBundles, data }: BundlingProps) {
                   <div className="text-5xl">🏆</div>
                 </div>
               </div>
-              
+
               {/* Right - Info */}
               <div className="w-1/2 p-3 flex flex-col justify-between">
                 <div>
-                  <h3 className="text-sm font-bold text-white mb-1">Paket Ultimate</h3>
+                  <h3 className="text-sm font-bold text-white mb-1">
+                    Paket Ultimate
+                  </h3>
                   <div className="space-y-0.5 mb-2">
                     <div className="flex items-center gap-1 text-white text-[9px]">
                       <span>✓</span>
